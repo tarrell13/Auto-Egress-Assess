@@ -25,13 +25,10 @@ class Conductor:
 
     def load_client_protocols(self, command_line_object):
         for name in glob.glob('protocols/clients/*.py'):
-            #print(name)
             if name.endswith(".py") and ("__init__" not in name):
-                #loaded_client_proto = imp.load_source(name.replace("/", ".").rstrip('.py'), name)
-                s_loaded_client_proto = imp.util.spec_from_file_location("." + name.replace("/", ".").rstrip('.py'), name)
-                loaded_client_proto = imp.util.module_from_spec(s_loaded_client_proto)
-                s_loaded_client_proto.loader.exec_module(loaded_client_proto)
-                #print((loaded_client_proto.__dict__))
+                spec = imp.util.spec_from_file_location("." + name.replace("/", ".").rstrip('.py'), name)
+                loaded_client_proto = imp.util.module_from_spec(spec)
+                spec.loader.exec_module(loaded_client_proto)
                 self.client_protocols[name] = loaded_client_proto.Client(command_line_object)
         return
 
