@@ -1,26 +1,35 @@
 # Code from http://pymotw.com/2/smtpd/
 # Code from https://github.com/trentrichardson/Python-Email-Dissector/blob/master/EDHelpers/EDServer.py
+# Updated to use aiosmtpd for Python 3.13+ compatibility
 
 import base64
 from email.parser import Parser
-import smtpd
 import time
 from common import helpers
+from aiosmtpd.controller import Controller
+from aiosmtpd.handlers import Message
 
 
-class CustomSMTPServer(smtpd.SMTPServer):
+class CustomSMTPServer(Message):
 
-    def process_message(self, peer, mailfrom, rcpttos, data, mail_options=None, rcpt_options=None):
-
+    def handle_message(self, message):
+        # Extract peer information from the message envelope
+        peer = f"{message.get('X-Peer', 'unknown')}"
+        mailfrom = message.get('From', 'unknown')
+        rcpttos = message.get('To', 'unknown')
+        
         print(('Receiving message from:', peer))
         print(('Message addressed from:', mailfrom))
         print(('Message addressed to  :', rcpttos))
-        print(('Message length        :', len(data)))
+        print(('Message length        :', len(str(message))))
 
         loot_directory = helpers.ea_path() + '/data'
 
+        # Convert message to string for parsing
+        data = str(message)
+        
         p = Parser()
-        msgobj = p.parsestr(data.decode('utf-8'))
+        msgobj = p.parsestr(data)
         for part in msgobj.walk():
             attachment = self.email_parse_attachment(part)
             if type(attachment) is dict and 'filedata' in attachment:
@@ -38,7 +47,7 @@ class CustomSMTPServer(smtpd.SMTPServer):
 
                 with open(loot_directory + "/" + file_name, 'a') as email_file:
                     #email_file.write('METADATA: File from - ' + str(peer) + '\n\n')
-                    email_file.write(data.decode('utf-8'))
+                    email_file.write(data)
         return
 
     def email_parse_attachment(self, message_part):

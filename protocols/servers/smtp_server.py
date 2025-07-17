@@ -2,16 +2,19 @@
 
 This is a SMTP server module.  This was based on code made available at:
 http://pymotw.com/2/smtpd/
+Updated to use aiosmtpd for Python 3.13+ compatibility
 
 '''
 
-import asyncore
 import os
 import socket
 import sys
 import requests
+import threading
+import time
 from common import helpers
 from protocols.servers.serverlibs.smtp import smtp_class
+from aiosmtpd.controller import Controller
 
 
 class Server:
@@ -23,6 +26,7 @@ class Server:
             self.port = int(cli_object.server_port)
         else:
             self.port = 25
+        self.controller = None
 
     def negotiatedServe(self):
 
@@ -32,14 +36,21 @@ class Server:
             os.makedirs(exfil_directory)
 
         try:
-            smtp_server = smtp_class.CustomSMTPServer(('0.0.0.0', self.port), None)
-        except socket.error:
+            handler = smtp_class.CustomSMTPServer()
+            self.controller = Controller(handler, hostname='0.0.0.0', port=self.port)
+            self.controller.start()
+        except OSError:
             requests.get("http://localhost:5000/send-status?error=True&protocol=%s" %self.protocol)
+            return
 
         try:
-            asyncore.loop()
+            # Keep the server running
+            while True:
+                time.sleep(1)
         except KeyboardInterrupt:
             requests.get("http://localhost:5000/send-status?stop=True&protocol=%s" %self.protocol)
+            if self.controller:
+                self.controller.stop()
             sys.exit()
 
         return
@@ -53,16 +64,23 @@ class Server:
                 os.makedirs(exfil_directory)
 
         try:
-            smtp_server = smtp_class.CustomSMTPServer(('0.0.0.0', self.port), None)
-        except socket.error:
+            handler = smtp_class.CustomSMTPServer()
+            self.controller = Controller(handler, hostname='0.0.0.0', port=self.port)
+            self.controller.start()
+            print(f"[*] SMTP server listening on port {self.port}")
+        except OSError:
             print(("[*] Error: Port %d is currently in use!" % self.port))
             print("[*] Error: Please re-start when not in use.")
             sys.exit()
 
         try:
-            asyncore.loop()
+            # Keep the server running
+            while True:
+                time.sleep(1)
         except KeyboardInterrupt:
             print("[*] Shutting down SMTP server...")
+            if self.controller:
+                self.controller.stop()
             sys.exit(0)
 
         return
