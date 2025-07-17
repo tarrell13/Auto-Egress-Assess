@@ -6,7 +6,7 @@ import base64
 from email.parser import Parser
 import time
 from common import helpers
-from aiosmtpd.controller import Controller
+# Line removed as the `Controller` import is unused.
 from aiosmtpd.handlers import Message
 
 
