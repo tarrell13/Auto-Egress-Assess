@@ -27,8 +27,7 @@ class Server:
             self.port = 25
         self.controller = None
 
-    def negotiatedServe(self):
-
+    def _start_and_run_server(self, error_callback, stop_callback, exit_code):
         exfil_directory = os.path.join(helpers.ea_path(), "data/")
 
         if not os.path.isdir(exfil_directory):
