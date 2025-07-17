@@ -10,7 +10,6 @@ import os
 import socket
 import sys
 import requests
-import threading
 import time
 from common import helpers
 from protocols.servers.serverlibs.smtp import smtp_class
