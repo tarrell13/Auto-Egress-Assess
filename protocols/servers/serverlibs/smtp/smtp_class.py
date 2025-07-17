@@ -23,7 +23,7 @@ class CustomSMTPServer(Message):
         print(('Message addressed to  :', rcpttos))
         print(('Message length        :', len(str(message))))
 
-        loot_directory = helpers.ea_path() + '/data'
+        loot_directory = os.path.join(helpers.ea_path(), 'data')
 
         # Convert message to string for parsing
         data = str(message)
