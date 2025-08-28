@@ -23,7 +23,7 @@ Run the following commands to install
 git clone https://github.com/tarrell13/Auto-Egress-Assess.git
 cd Auto-Egress-Assess
 python3 -m venv venv
-source . venv/bin/activate
+source ./venv/bin/activate
 python3 -m pip install pipenv
 pipenv install 
 ```
