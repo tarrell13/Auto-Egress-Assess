@@ -15,6 +15,19 @@ To setup, run the included setup script, or perform the following:
 
 We highly recommend using Debian as your server of choice! If you need to use Ubuntu, we would recommend to use 16.04 due to port 53 being in use by default on 18.04.
 
+Installation
+=====
+Run the following commands to install
+
+```
+git clone https://github.com/tarrell13/Auto-Egress-Assess.git
+cd Auto-Egress-Assess
+python3 -m venv venv
+source . venv/bin/activate
+python3 -m pip install pipenv
+pipenv install 
+```
+
 Usage
 =====
 
