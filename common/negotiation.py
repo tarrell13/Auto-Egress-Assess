@@ -33,10 +33,15 @@ class Negotiation(object):
 
     def start(self):
         self.GenerateProtocolConfigurations()
+        server_information = json.loads(request.get("https://ipinfo.io").content)
+
         log = logging.getLogger('werkzeug')
         log.disabled = True
-        server.name = "Egress Assess - Negotiation Mode"
+        server.name = "Egress Assess - Negotiation Mode\r[+] Negotiations Hosted: http://%s:5000/get-negotiations" %server_information["ip"]
         server.run(host="0.0.0.0")
+
+        print("[!] Client Command to Run Negotiation Mode ")
+        print("[*] python3 Egress-Assess.py --negotiation --ip %s --datetype ssn" %server_information["ip"])
 
     def GenerateProtocolConfigurations(self):
 
@@ -135,6 +140,7 @@ class Negotiation(object):
             print(("[+] Client %s attempting to send %s data" %(request.remote_addr, request.args.get("protocol").upper())))
 
         return jsonify({200: "Success"})
+
 
     """ API Endpoint needed to signal creation of LOOT Directory """
     @server.route('/create-directory', methods=["GET"])
