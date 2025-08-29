@@ -8,12 +8,12 @@ import os
 import socket
 import sys
 import requests
-import json
 import logging
 from pyftpdlib.log import config_logging
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
+
 
 class Server:
 
