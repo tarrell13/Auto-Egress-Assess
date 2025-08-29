@@ -12,9 +12,11 @@ import logging
 import string
 from common import helpers
 import shutil
+import requests
 
 server = flask.Flask(__name__)
 data = {}
+
 
 class Negotiation(object):
 
@@ -33,11 +35,11 @@ class Negotiation(object):
 
     def start(self):
         self.GenerateProtocolConfigurations()
-        server_information = json.loads(request.get("https://ipinfo.io").content)
+        server_information = json.loads(requests.get("https://ipinfo.io").content)
 
         log = logging.getLogger('werkzeug')
         log.disabled = True
-        server.name = "Egress Assess - Negotiation Mode\r[+] Negotiations Hosted: http://%s:5000/get-negotiations" %server_information["ip"]
+        server.name = "Egress Assess - Negotiation Mode - Negotiations Hosted: http://%s:5000/get-negotiations" %server_information["ip"]
         server.run(host="0.0.0.0")
 
         print("[!] Client Command to Run Negotiation Mode ")
@@ -140,7 +142,6 @@ class Negotiation(object):
             print(("[+] Client %s attempting to send %s data" %(request.remote_addr, request.args.get("protocol").upper())))
 
         return jsonify({200: "Success"})
-
 
     """ API Endpoint needed to signal creation of LOOT Directory """
     @server.route('/create-directory', methods=["GET"])
