@@ -7,7 +7,6 @@ Updated to use aiosmtpd for Python 3.13+ compatibility
 '''
 
 import os
-import socket
 import sys
 import requests
 import time
@@ -47,6 +46,33 @@ class Server:
                 time.sleep(1)
         except KeyboardInterrupt:
             requests.get("http://localhost:5000/send-status?stop=True&protocol=%s" %self.protocol)
+            if self.controller:
+                self.controller.stop()
+            sys.exit()
+
+        return
+
+    def negotiatedServe(self):
+
+        exfil_directory = os.path.join(helpers.ea_path(), "data/")
+
+        if not os.path.isdir(exfil_directory):
+            os.makedirs(exfil_directory)
+
+        try:
+            handler = smtp_class.CustomSMTPServer()
+            self.controller = Controller(handler, hostname='0.0.0.0', port=self.port)
+            self.controller.start()
+        except OSError:
+            requests.get("http://localhost:5000/send-status?error=True&protocol=%s" % self.protocol)
+            return
+
+        try:
+            # Keep the server running
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            requests.get("http://localhost:5000/send-status?stop=True&protocol=%s" % self.protocol)
             if self.controller:
                 self.controller.stop()
             sys.exit()

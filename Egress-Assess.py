@@ -130,7 +130,10 @@ if __name__ == "__main__":
         the_conductor.load_datatypes(cli_parsed)
 
         if cli_parsed.negotiation:
-            configs = json.loads(requests.get("http://%s:5000/get-negotiations" %cli_parsed.ip).content)
+            if cli_parsed.negotiation_file:
+                configs = json.loads(open(cli_parsed.negotiation_file, "r").read())
+            else:
+                configs = json.loads(requests.get("http://%s:5000/get-negotiations" %cli_parsed.ip).content)
 
             if cli_parsed.folder:
                 requests.get("http://%s:5000/create-directory?folder=%s" %(cli_parsed.ip,str(cli_parsed.folder)))

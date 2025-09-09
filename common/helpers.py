@@ -30,6 +30,7 @@ def cli_parser():
     automation.add_argument("--negotiation", help="Automates testing by configuring each specified protocol and"
                                                  "exchanging information with between client/server",
                            action="store_true", default=False)
+    automation.add_argument("--negotiation-file", help="Manual reference to negotiation file downloaded", action="store", default=False)
     automation.add_argument("--folder", help="Folder to drop all results into", action="store", default=False)
 
     protocols = parser.add_argument_group('Client Protocol Options')

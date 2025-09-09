@@ -33,14 +33,16 @@ class Client:
             self.port = int(config["https"]["port"])
 
         print("[+] Sending HTTPS data")
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
 
-        ssl._create_default_https_context = ssl._create_unverified_context
         if not self.file_transfer:
             url = "https://" + self.remote_server + ":" + str(self.port) + "/post_data.php?protocol=https"
 
             # Post the data to the web server at the specified URL
             try:
-                f = urllib.request.urlopen(url, data=data_to_transmit.encode())
+                f = urllib.request.urlopen(url, data=data_to_transmit.encode(), context=context)
                 f.close()
                 print("[*] File sent!!!")
             except urllib.error.URLError:
@@ -52,7 +54,7 @@ class Client:
 
             try:
                 data_to_transmit = self.file_transfer + ".:::-989-:::." + data_to_transmit
-                f = urllib.request.urlopen(url, data=data_to_transmit.encode())
+                f = urllib.request.urlopen(url, data=data_to_transmit.encode(), context=context)
                 f.close()
                 print("[*] File sent!!!")
             except urllib.error.URLError:
@@ -64,13 +66,16 @@ class Client:
 
     def transmit(self, data_to_transmit):
 
-        ssl._create_default_https_context = ssl._create_unverified_context
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+
         if not self.file_transfer:
             url = "https://" + self.remote_server + ":" + str(self.port) + "/post_data.php?protocol=https"
 
             # Post the data to the web server at the specified URL
             try:
-                f = urllib.request.urlopen(url, data=data_to_transmit.encode())
+                f = urllib.request.urlopen(url, data=data_to_transmit.encode(), context=context)
                 f.close()
                 print("[*] File sent!!!")
             except urllib.error.URLError:
@@ -82,7 +87,7 @@ class Client:
 
             try:
                 data_to_transmit = self.file_transfer + ".:::-989-:::." + data_to_transmit
-                f = urllib.request.urlopen(url, data=data_to_transmit.encode())
+                f = urllib.request.urlopen(url, data=data_to_transmit.encode(), context=context)
                 f.close()
                 print("[*] File sent!!!")
             except urllib.error.URLError:

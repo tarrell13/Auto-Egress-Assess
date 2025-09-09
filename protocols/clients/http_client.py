@@ -27,7 +27,6 @@ class Client:
             else:
                 self.file_transfer = cli_object.file
 
-
     def negotiatedTransmit(self, data_to_transmit, config=None):
 
         if config:
@@ -40,7 +39,10 @@ class Client:
 
             # Post the data to the web server at the specified URL
             try:
-                headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36' }
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"
+                }
+
                 req = urllib.request.Request(url, data_to_transmit, headers)
                 f = urllib.request.urlopen(req, data=data_to_transmit.encode())
                 f.close()
