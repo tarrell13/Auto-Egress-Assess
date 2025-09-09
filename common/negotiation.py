@@ -35,7 +35,10 @@ class Negotiation(object):
 
     def start(self):
         self.GenerateProtocolConfigurations()
-        server_information = json.loads(requests.get("https://ipinfo.io").content)
+        try:
+            server_information = json.loads(requests.get("https://ipinfo.io").content)
+        except requests.exceptions.ConnectionError:
+            server_information = {"ip": "COOL INSTANCE IP"}
 
         log = logging.getLogger('werkzeug')
         log.disabled = True
