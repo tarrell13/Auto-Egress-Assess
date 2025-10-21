@@ -56,14 +56,12 @@ class Server:
             # Define a customized banner (string returned when client connects)
             handler.banner = "Connecting to Egress-Assess's FTP server!"
 
-            # Configure for passive mode with proper port range
-            handler.passive_ports = list(range(60000, 60020))  # Smaller range for containers
+            # Configure for active mode only (no passive ports needed)
+            # This limits FTP to only use port 21
+            # Note: Passive mode is still available but no specific port range
             
             # Set timeout to prevent hanging connections
             handler.timeout = 60
-            
-            # For local/container environments, don't set masquerade address
-            # This allows the server to work better in Docker/localhost scenarios
 
             try:
                 server = FTPServer(('0.0.0.0', self.port), handler)
@@ -103,14 +101,12 @@ class Server:
             # Define a customized banner (string returned when client connects)
             handler.banner = "Connecting to Egress-Assess's FTP server!"
 
-            # Configure for passive mode with proper port range
-            handler.passive_ports = list(range(60000, 60020))  # Smaller range for containers
+            # Configure for active mode only (no passive ports needed)
+            # This limits FTP to only use port 21
+            # Note: Passive mode is still available but no specific port range
             
             # Set timeout to prevent hanging connections
             handler.timeout = 60
-            
-            # For local/container environments, don't set masquerade address
-            # This allows the server to work better in Docker/localhost scenarios
 
             try:
                 server = FTPServer(('', self.port), handler)
