@@ -11,6 +11,7 @@ import sys
 from common import helpers
 from ftplib import FTP
 from ftplib import error_perm
+from ftplib import error_temp
 
 
 class Client:
@@ -61,8 +62,8 @@ class Client:
             print("[*] Error: Username or password is incorrect!  Please re-run.")
             sys.exit()
 
-        # Set passive mode to False to avoid NAT/firewall issues
-        ftp.set_pasv(False)
+        # Use passive mode for better compatibility
+        ftp.set_pasv(True)
 
         if not self.file_transfer:
             ftp_file_name = helpers.writeout_text_data(data_to_transmit, protocol="FTP")
@@ -109,8 +110,8 @@ class Client:
             print("[*] Error: Username or password is incorrect!  Please re-run.")
             sys.exit()
 
-        # Set passive mode to False to avoid NAT/firewall issues
-        ftp.set_pasv(False)
+        # Use passive mode for better compatibility
+        ftp.set_pasv(True)
 
         if not self.file_transfer:
             ftp_file_name = helpers.writeout_text_data(data_to_transmit, protocol="FTP")

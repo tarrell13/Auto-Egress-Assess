@@ -56,16 +56,20 @@ class Server:
             # Define a customized banner (string returned when client connects)
             handler.banner = "Connecting to Egress-Assess's FTP server!"
 
-            # Configure for both active and passive modes
-            if self.ip:
-                handler.masquerade_address = self.ip
-            handler.passive_ports = list(range(60000, 60100))
+            # Configure for passive mode with proper port range
+            handler.passive_ports = list(range(60000, 60020))  # Smaller range for containers
             
             # Set timeout to prevent hanging connections
             handler.timeout = 60
+            
+            # For local/container environments, don't set masquerade address
+            # This allows the server to work better in Docker/localhost scenarios
 
             try:
-                server = FTPServer(('', self.port), handler)
+                server = FTPServer(('0.0.0.0', self.port), handler)
+                # Override the passive ports for better container compatibility
+                server.handler = handler
+                print(f"[*] FTP server starting on port {self.port} with passive ports 60000-60019")
                 server.serve_forever()
             except socket.error:
                 requests.get("http://localhost:5000/send-status?error=True&protocol=%s" %self.protocol)
@@ -99,13 +103,14 @@ class Server:
             # Define a customized banner (string returned when client connects)
             handler.banner = "Connecting to Egress-Assess's FTP server!"
 
-            # Configure for both active and passive modes
-            if self.ip:
-                handler.masquerade_address = self.ip
-            handler.passive_ports = list(range(60000, 60100))
+            # Configure for passive mode with proper port range
+            handler.passive_ports = list(range(60000, 60020))  # Smaller range for containers
             
             # Set timeout to prevent hanging connections
             handler.timeout = 60
+            
+            # For local/container environments, don't set masquerade address
+            # This allows the server to work better in Docker/localhost scenarios
 
             try:
                 server = FTPServer(('', self.port), handler)
