@@ -48,6 +48,12 @@ class Client:
         except socket.gaierror:
             print("[*] Error: Cannot connect to FTP server.  Checking provided ip!")
             sys.exit()
+        except socket.timeout:
+            print("[*] Error: Connection to FTP server timed out!")
+            sys.exit()
+        except ConnectionRefusedError:
+            print("[*] Error: FTP server refused connection!")
+            sys.exit()
 
         try:
             ftp.login(self.username, self.password)
@@ -55,15 +61,31 @@ class Client:
             print("[*] Error: Username or password is incorrect!  Please re-run.")
             sys.exit()
 
+        # Set passive mode to False to avoid NAT/firewall issues
+        ftp.set_pasv(False)
+
         if not self.file_transfer:
             ftp_file_name = helpers.writeout_text_data(data_to_transmit, protocol="FTP")
-            ftp.storbinary("STOR " + ftp_file_name, open(helpers.ea_path() + "/" + ftp_file_name, 'rb'))
-            os.remove(helpers.ea_path() + "/" + ftp_file_name)
-
+            try:
+                with open(helpers.ea_path() + "/" + ftp_file_name, 'rb') as f:
+                    ftp.storbinary("STOR " + ftp_file_name, f)
+                os.remove(helpers.ea_path() + "/" + ftp_file_name)
+            except IOError as e:
+                print(f"[*] Error reading file: {e}")
+                sys.exit()
         else:
-            ftp.storbinary("STOR " + self.file_transfer, open(self.file_transfer))
+            try:
+                with open(self.file_transfer, 'rb') as f:
+                    ftp.storbinary("STOR " + self.file_transfer, f)
+            except IOError as e:
+                print(f"[*] Error reading file: {e}")
+                sys.exit()
 
-        ftp.quit()
+        try:
+            ftp.quit()
+        except:
+            # If quit fails, try close
+            ftp.close()
         print("[*] File sent!!!")
 
     def transmit(self, data_to_transmit):
@@ -74,6 +96,12 @@ class Client:
         except socket.gaierror:
             print("[*] Error: Cannot connect to FTP server.  Checking provided ip!")
             sys.exit()
+        except socket.timeout:
+            print("[*] Error: Connection to FTP server timed out!")
+            sys.exit()
+        except ConnectionRefusedError:
+            print("[*] Error: FTP server refused connection!")
+            sys.exit()
 
         try:
             ftp.login(self.username, self.password)
@@ -81,15 +109,29 @@ class Client:
             print("[*] Error: Username or password is incorrect!  Please re-run.")
             sys.exit()
 
+        # Set passive mode to False to avoid NAT/firewall issues
+        ftp.set_pasv(False)
+
         if not self.file_transfer:
             ftp_file_name = helpers.writeout_text_data(data_to_transmit, protocol="FTP")
-
-            ftp.storbinary(
-                "STOR " + ftp_file_name, open(helpers.ea_path()
-                        + "/" + ftp_file_name, 'rb'))
-            os.remove(helpers.ea_path() + "/" + ftp_file_name)
+            try:
+                with open(helpers.ea_path() + "/" + ftp_file_name, 'rb') as f:
+                    ftp.storbinary("STOR " + ftp_file_name, f)
+                os.remove(helpers.ea_path() + "/" + ftp_file_name)
+            except IOError as e:
+                print(f"[*] Error reading file: {e}")
+                sys.exit()
         else:
-            ftp.storbinary("STOR " + self.file_transfer, open(self.file_transfer))
+            try:
+                with open(self.file_transfer, 'rb') as f:
+                    ftp.storbinary("STOR " + self.file_transfer, f)
+            except IOError as e:
+                print(f"[*] Error reading file: {e}")
+                sys.exit()
 
-        ftp.quit()
+        try:
+            ftp.quit()
+        except:
+            # If quit fails, try close
+            ftp.close()
         print("[*] File sent!!!")

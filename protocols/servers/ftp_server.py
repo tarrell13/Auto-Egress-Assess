@@ -56,9 +56,13 @@ class Server:
             # Define a customized banner (string returned when client connects)
             handler.banner = "Connecting to Egress-Assess's FTP server!"
 
-            # Define public address and  passive ports making NAT configurations more predictable
-            handler.masquerade_address = self.ip
+            # Configure for both active and passive modes
+            if self.ip:
+                handler.masquerade_address = self.ip
             handler.passive_ports = list(range(60000, 60100))
+            
+            # Set timeout to prevent hanging connections
+            handler.timeout = 60
 
             try:
                 server = FTPServer(('', self.port), handler)
@@ -95,9 +99,13 @@ class Server:
             # Define a customized banner (string returned when client connects)
             handler.banner = "Connecting to Egress-Assess's FTP server!"
 
-            #Define public address and  passive ports making NAT configurations more predictable
-            handler.masquerade_address = self.ip
+            # Configure for both active and passive modes
+            if self.ip:
+                handler.masquerade_address = self.ip
             handler.passive_ports = list(range(60000, 60100))
+            
+            # Set timeout to prevent hanging connections
+            handler.timeout = 60
 
             try:
                 server = FTPServer(('', self.port), handler)
