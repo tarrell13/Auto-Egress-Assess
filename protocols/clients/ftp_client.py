@@ -62,9 +62,8 @@ class Client:
             print("[*] Error: Username or password is incorrect!  Please re-run.")
             sys.exit()
 
-        # Use active mode to avoid needing passive port range
-        # Note: This may not work in containerized/NAT environments
-        ftp.set_pasv(False)
+        # Use passive mode for better compatibility in containerized environments
+        ftp.set_pasv(True)
 
         if not self.file_transfer:
             ftp_file_name = helpers.writeout_text_data(data_to_transmit, protocol="FTP")
@@ -111,9 +110,8 @@ class Client:
             print("[*] Error: Username or password is incorrect!  Please re-run.")
             sys.exit()
 
-        # Use active mode to avoid needing passive port range
-        # Note: This may not work in containerized/NAT environments
-        ftp.set_pasv(False)
+        # Use passive mode for better compatibility in containerized environments
+        ftp.set_pasv(True)
 
         if not self.file_transfer:
             ftp_file_name = helpers.writeout_text_data(data_to_transmit, protocol="FTP")
