@@ -7,6 +7,7 @@ http://pymotw.com/2/smtpd/
 
 import smtplib
 import email.utils
+import textwrap
 from email import encoders
 from email.mime import base
 from email.mime import text
@@ -42,8 +43,9 @@ class Client:
         print("[+] Sending SMTP Data")
 
         if not self.file_transfer:
-            # Create the message
-            msg = text.MIMEText('This is the data to exfil:\n\n' + data_to_transmit)
+            # Create the message with proper line wrapping for RFC5321 compliance
+            wrapped_data = textwrap.fill(data_to_transmit, width=900)  # Leave margin for headers
+            msg = text.MIMEText('This is the data to exfil:\n\n' + wrapped_data)
             msg['To'] = email.utils.formataddr(('Server', 'server@egress-assess.com'))
             msg['From'] = email.utils.formataddr(('Tester', 'tester@egress-assess.com'))
             msg['Subject'] = 'Egress-Assess Exfil Data'
@@ -80,8 +82,9 @@ class Client:
         print("[*] Sending data over e-mail...")
 
         if not self.file_transfer:
-            # Create the message
-            msg = text.MIMEText('This is the data to exfil:\n\n' + data_to_transmit)
+            # Create the message with proper line wrapping for RFC5321 compliance
+            wrapped_data = textwrap.fill(data_to_transmit, width=900)  # Leave margin for headers
+            msg = text.MIMEText('This is the data to exfil:\n\n' + wrapped_data)
             msg['To'] = email.utils.formataddr(('Server', 'server@egress-assess.com'))
             msg['From'] = email.utils.formataddr(('Tester', 'tester@egress-assess.com'))
             msg['Subject'] = 'Egress-Assess Exfil Data'

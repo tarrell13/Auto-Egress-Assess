@@ -4,6 +4,7 @@
 
 import base64
 from email.parser import Parser
+import os
 import time
 from common import helpers
 # Line removed as the `Controller` import is unused.
