@@ -21,4 +21,4 @@ scapy = "*"
 aiosmtpd = "*"  # Added for Python 3.13+ compatibility (replaces smtpd)
 
 [requires]
-python_version = "3.13"
+python_version = "3.14"
